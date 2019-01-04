@@ -27,6 +27,16 @@ class OwnPromise {
         resolve(value);
       });
   }
+
+  then(onFulfilled, onRejected) {
+    if (this.state === FULFILLED) {
+      onFulfilled(this.value);
+    } else if (this.state === REJECTED) {
+      onRejected(this.error);
+    } else {
+      this.thenners.push({ onFulfilled, onRejected });
+    }
+  }
 }
 
 module.exports = OwnPromise;
