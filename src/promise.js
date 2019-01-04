@@ -13,10 +13,19 @@ class OwnPromise {
     executor(this.resolve, this.reject);
   }
 
-  static reject(reason) {
+  static reject(value) {
     this.state = 'REJECTED';
     this.value = reason;
-    return new OwnPromise((_, reject) => reject(reason));
+    return new OwnPromise((reject) => reject(value));
+  }
+
+  static resolve(value) {
+    this.state = 'FULFILLED';
+    this.value = value;
+    return value && ({}).hasOwnProperty.call(value, 'then') ? value
+      : new OwnPromise(resolve => {
+        resolve(value);
+      });
   }
 }
 
