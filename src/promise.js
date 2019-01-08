@@ -14,13 +14,12 @@ class OwnPromise {
   static reject(value) {
     this.state = 'REJECTED';
     this.value = value;
-    return new OwnPromise((reject) => reject(value));
+    return new OwnPromise(reject => reject(value));
   }
 
   static race(iterable) {
-    if (typeof iterable === 'number' || typeof iterable === 'string' ||typeof iterable === 'boolean') {
-      return new OwnPromise(() => { reject(err) });
-    }
+    // if (typeof iterable === 'number' || typeof iterable === 'string' || typeof iterable === 'boolean') {
+    // }
 
     return new OwnPromise((resolve, reject) => {
       iterable.forEach((item, i) => {
@@ -40,22 +39,19 @@ class OwnPromise {
     this.state = 'FULFILLED';
     this.value = value;
     return value && ({}).hasOwnProperty.call(value, 'then') ? value : new OwnPromise(resolve => {
-        resolve(value);
-      });
+      resolve(value);
+    });
   }
 
   then(onFulfilled, onRejected) {
-    if (this.state === FULFILLED) {
+    if (this.state === 'FULFILLED') {
       onFulfilled(this.value);
-    } else if (this.state === REJECTED) {
+    } else if (this.state === 'REJECTED') {
       onRejected(this.error);
     } else {
       this.thenners.push({ onFulfilled, onRejected });
     }
   }
 }
-let promise = new OwnPromise(function(resolve, reject) {return})
-
-console.log(promise.race([then, then]));
 
 module.exports = OwnPromise;
