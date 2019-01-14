@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*jslint indent: 8*/
 /*global Promise, require, setImmediate, setTimeout, describe, it */
 "use strict";

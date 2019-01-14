@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*global Promise, require, setImmediate, setTimeout, describe, it */
 "use strict";
 

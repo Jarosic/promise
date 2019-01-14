@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use strict";
 // browser compatibility: old browsers don't have strict mode, so skip
 // a few tests which rely on strict mode behavior for `this`.
