@@ -122,7 +122,10 @@ class OwnPromise {
   }
 
   static reject(value) {
-    return new OwnPromise((resolve, reject) => {
+    return new this((resolve, reject) => {
+      if (typeof resolve !== 'function' || typeof reject !== 'function') {
+        throw new TypeError('Not a function');
+      }
       reject(value);
     });
   }
