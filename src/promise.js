@@ -107,11 +107,24 @@ class OwnPromise {
   /* Public static tools */
 
   static resolve(value) {
-    return new OwnPromise(resolve => resolve(value));
+    if (typeof this !== 'function') {
+      throw new TypeError('this is not a constructor');
+    } else if (value instanceof OwnPromise) {
+      return value;
+    }
+
+    return new this((resolve, reject) => {
+      if (typeof resolve !== 'function' || typeof reject !== 'function') {
+        throw new TypeError('Not a function');
+      }
+      resolve(value);
+    });
   }
 
   static reject(value) {
-    return new OwnPromise((resolve, reject) => reject(value));
+    return new OwnPromise((resolve, reject) => {
+      reject(value);
+    });
   }
 
   static all(promises) {
