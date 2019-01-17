@@ -16,7 +16,12 @@ class OwnPromise {
     this._thenners = [];
     this._resolve = this._resolve.bind(this);
     this._reject = this._reject.bind(this);
-    executer(this._resolve, this._reject);
+
+    try {
+      executer(this._resolve, this._reject);
+    } catch (error) {
+      this._reject(error);
+    }
   }
 
   /* Helper methods */
@@ -64,6 +69,10 @@ class OwnPromise {
 
           if (onResolved) {
             try {
+              if (typeof resolve !== 'function') {
+                throw new TypeError('Not a function');
+              }
+
               nextValue = onResolved(value);
 
               if (nextValue && nextValue.then) {
@@ -94,10 +103,6 @@ class OwnPromise {
       };
       this._handleThenner(thenner);
     });
-  }
-
-  done(onResolved) {
-    return this.then(onResolved);
   }
 
   catch(onRejected) {
@@ -131,15 +136,17 @@ class OwnPromise {
   }
 
   static all(promises) {
-    const isIterable = object => object !== null && typeof object[Symbol.iterator] === 'function';
+    if (!Array.isArray(promises)) {
+      return this.reject(new TypeError('Not an array'));
+    }
 
-    return new OwnPromise((resolve, reject) => {
-      if (!isIterable(promises)) {
-        throw new TypeError('ERROR');
-      }
-
+    return new this((resolve, reject) => {
       const values = new Array(promises.length);
       let counter = 0;
+
+      if (promises.length < 1) {
+        return resolve([]);
+      }
 
       const tryResolve = i => value => {
         values[i] = value;
@@ -158,17 +165,17 @@ class OwnPromise {
   }
 
   static race(iterable) {
-    const isIterable = object => object !== null && typeof object[Symbol.iterator] === 'function';
-
-    if (!isIterable(iterable)) {
-      throw new TypeError('ERROR');
+    if (!Array.isArray(iterable)) {
+      return this.reject(new TypeError('Not an array'));
     }
-    return new OwnPromise((resolve, reject) => {
+
+    return new this((resolve, reject) => {
       for (let i = 0; i < iterable.length; i++) {
         iterable[i].then(resolve, reject);
       }
     });
   }
 }
+
 module.exports = OwnPromise;
 
