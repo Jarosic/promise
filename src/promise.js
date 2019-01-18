@@ -3,8 +3,6 @@ const PENDING = 'PENDING';
 const RESOLVED = 'RESOLVED';
 const REJECTED = 'REJECTED';
 
-const callLater = fn => setTimeout(fn, 0);
-
 class OwnPromise {
   constructor(executer) {
     if (typeof executer !== 'function') {
@@ -50,9 +48,13 @@ class OwnPromise {
 
   _handleThenner(thenner) {
     if (this._state === RESOLVED) {
-      thenner.onResolved && callLater(() => thenner.onResolved(this._value));
+      setTimeout(() => {
+        thenner.onResolved(this._value);
+      }, 0);
     } else if (this._state === REJECTED) {
-      thenner.onRejected && callLater(() => thenner.onRejected(this._value));
+      setTimeout(() => {
+        thenner.onRejected(this._value);
+      }, 0);
     } else {
       this._thenners.push(thenner);
     }
