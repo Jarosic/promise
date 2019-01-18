@@ -3,7 +3,6 @@ const PENDING = 'PENDING';
 const RESOLVED = 'RESOLVED';
 const REJECTED = 'REJECTED';
 
-
 class OwnPromise {
   constructor(executer) {
     if (typeof executer !== 'function') {
